@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Sprout, Plus, Key, ShieldCheck } from "lucide-react";
+import { Sprout, Plus, Key, ShieldCheck, LogOut } from "lucide-react";
 import { api } from "../api.js";
+import { supabase } from "../supabaseClient.js";
 
 export default function GreenhousePicker({ onSelect, isAdmin, onOpenAdmin }) {
   const [greenhouses, setGreenhouses] = useState(null); // null = loading
@@ -59,9 +60,28 @@ export default function GreenhousePicker({ onSelect, isAdmin, onOpenAdmin }) {
       <div style={{ width: "100%", maxWidth: 420 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
           <h1 style={{ fontSize: 22, fontWeight: 700 }}>Your Greenhouses</h1>
-          {isAdmin && (
+          <div style={{ display: "flex", gap: 6 }}>
+            {isAdmin && (
+              <button
+                onClick={onOpenAdmin}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 12px",
+                  borderRadius: "var(--radius-lg)",
+                  border: "1px solid var(--border-soft)",
+                  background: "var(--bg-panel)",
+                  color: "var(--text-muted)",
+                  fontSize: 12,
+                }}
+              >
+                <ShieldCheck size={13} /> Admin
+              </button>
+            )}
             <button
-              onClick={onOpenAdmin}
+              onClick={() => supabase.auth.signOut()}
+              title="Sign out"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -74,9 +94,9 @@ export default function GreenhousePicker({ onSelect, isAdmin, onOpenAdmin }) {
                 fontSize: 12,
               }}
             >
-              <ShieldCheck size={13} /> Admin
+              <LogOut size={13} /> Sign out
             </button>
-          )}
+          </div>
         </div>
         <p style={{ color: "var(--text-muted)", fontSize: 13, marginBottom: 20 }}>
           Pick a greenhouse to manage, or set up a new one.

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Key, Eye, EyeOff, RefreshCw, Trash2, Users, Mail, Check } from "lucide-react";
+import { ArrowLeft, Key, Eye, EyeOff, RefreshCw, Trash2, Users, Mail, Check, LogOut } from "lucide-react";
 import { api } from "../api.js";
+import { supabase } from "../supabaseClient.js";
 
 export default function AdminPage({ onBack }) {
   const [users, setUsers] = useState(null); // null = loading
@@ -62,18 +63,23 @@ export default function AdminPage({ onBack }) {
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "28px 20px 60px" }}>
-      <header style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-        <IconButton title="Back" onClick={onBack}>
-          <ArrowLeft size={15} />
-        </IconButton>
-        <div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, display: "flex", alignItems: "center", gap: 8 }}>
-            <Users size={20} /> Admin Panel
-          </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 2 }}>
-            Every registered user and their greenhouses
-          </p>
+      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <IconButton title="Back" onClick={onBack}>
+            <ArrowLeft size={15} />
+          </IconButton>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 800, display: "flex", alignItems: "center", gap: 8 }}>
+              <Users size={20} /> Admin Panel
+            </h1>
+            <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 2 }}>
+              Every registered user and their greenhouses
+            </p>
+          </div>
         </div>
+        <IconButton title="Sign out" onClick={() => supabase.auth.signOut()}>
+          <LogOut size={15} />
+        </IconButton>
       </header>
 
       {error && <div style={{ color: "var(--accent-danger)", fontSize: 13, marginBottom: 16 }}>{error}</div>}

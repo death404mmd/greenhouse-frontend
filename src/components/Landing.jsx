@@ -5,11 +5,70 @@ import { api } from "../api.js";
 export default function Landing({ onEnterApp }) {
   return (
     <div>
+      <TopNav onEnterApp={onEnterApp} />
       <Hero onEnterApp={onEnterApp} />
       <AboutProject />
       <AboutMe />
       <Contact />
       <Footer />
+    </div>
+  );
+}
+
+function TopNav({ onEnterApp }) {
+  return (
+    <div
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+        backdropFilter: "blur(8px)",
+        background: "rgba(14, 21, 18, 0.85)",
+        borderBottom: "1px solid var(--border-soft)",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1040,
+          margin: "0 auto",
+          padding: "14px 24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+          <div
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: "var(--radius-sm)",
+              background: "var(--accent-leaf-dim)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--accent-leaf)",
+            }}
+          >
+            <Sprout size={15} />
+          </div>
+          <span style={{ fontWeight: 700, fontSize: 15 }}>Smart Greenhouse</span>
+        </div>
+        <button
+          onClick={onEnterApp}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--border-soft)",
+            background: "var(--bg-panel)",
+            color: "var(--text-primary)",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          Sign In
+        </button>
+      </div>
     </div>
   );
 }
