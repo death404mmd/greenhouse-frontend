@@ -57,6 +57,12 @@ export const api = {
   regenerateGreenhouseKey: (ghId) =>
     jsonFetch(`/api/admin/greenhouses/${ghId}/regenerate-key`, { method: "POST" }),
   deleteGreenhouseAsAdmin: (ghId) => jsonFetch(`/api/admin/greenhouses/${ghId}`, { method: "DELETE" }),
+
+  sendContactMessage: (name, email, message) =>
+    jsonFetch("/api/contact", { method: "POST", body: JSON.stringify({ name, email, message }) }),
+  getMessages: () => jsonFetch("/api/admin/messages"),
+  markMessageRead: (id) => jsonFetch(`/api/admin/messages/${id}`, { method: "PATCH" }),
+  deleteMessage: (id) => jsonFetch(`/api/admin/messages/${id}`, { method: "DELETE" }),
 };
 
 export function useGreenhouseSocket(greenhouseId) {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient.js";
 import { api } from "./api.js";
+import Landing from "./components/Landing.jsx";
 import AuthPage from "./components/AuthPage.jsx";
 import GreenhousePicker from "./components/GreenhousePicker.jsx";
 import Dashboard from "./components/Dashboard.jsx";
@@ -8,6 +9,7 @@ import AdminPage from "./components/AdminPage.jsx";
 
 export default function App() {
   const [session, setSession] = useState(undefined); // undefined = loading, null = signed out
+  const [showAuth, setShowAuth] = useState(false);
   const [greenhouseId, setGreenhouseId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [view, setView] = useState("greenhouses"); // "greenhouses" | "admin"
@@ -20,6 +22,7 @@ export default function App() {
         setGreenhouseId(null);
         setIsAdmin(false);
         setView("greenhouses");
+        setShowAuth(false);
       }
     });
     return () => listener.subscription.unsubscribe();
@@ -39,7 +42,7 @@ export default function App() {
   }
 
   if (!session) {
-    return <AuthPage />;
+    return showAuth ? <AuthPage /> : <Landing onEnterApp={() => setShowAuth(true)} />;
   }
 
   if (view === "admin") {
