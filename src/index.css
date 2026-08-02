@@ -1,0 +1,76 @@
+/* ---------------------------------------------------------
+   Design tokens
+   Palette inspired by the inside of a greenhouse at dusk - dark pine
+   green, amber for heat/heater, muted blue for humidity/water, with
+   a subtle glasshouse grid pattern layered over the background.
+--------------------------------------------------------- */
+:root {
+  --bg-deep: #0e1512;
+  --bg-panel: #161f1a;
+  --bg-panel-raised: #1d2820;
+  --border-soft: rgba(231, 237, 229, 0.09);
+  --border-strong: rgba(231, 237, 229, 0.18);
+
+  --text-primary: #e7ede5;
+  --text-muted: #8fa087;
+  --text-faint: #5f6e58;
+
+  --accent-leaf: #8fbf6f;
+  --accent-leaf-dim: rgba(143, 191, 111, 0.14);
+  --accent-amber: #d9a441;
+  --accent-amber-dim: rgba(217, 164, 65, 0.14);
+  --accent-water: #5b9bb0;
+  --accent-water-dim: rgba(91, 155, 176, 0.14);
+  --accent-danger: #c15c4a;
+  --accent-danger-dim: rgba(193, 92, 74, 0.14);
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-deep);
+  background-image:
+    linear-gradient(var(--border-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+  background-size: 64px 64px;
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--accent-leaf-dim);
+}
