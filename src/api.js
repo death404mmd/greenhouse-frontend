@@ -33,6 +33,8 @@ async function jsonFetch(path, options = {}) {
 export const api = {
   listGreenhouses: () => jsonFetch("/api/greenhouses"),
   createGreenhouse: (name) => jsonFetch("/api/greenhouses", { method: "POST", body: JSON.stringify({ name }) }),
+  renameGreenhouse: (ghId, name) =>
+    jsonFetch(`/api/greenhouses/${ghId}`, { method: "PATCH", body: JSON.stringify({ name }) }),
 
   getStatus: (ghId) => jsonFetch(`/api/greenhouses/${ghId}/status`),
   getHistory: (ghId) => jsonFetch(`/api/greenhouses/${ghId}/history`),
@@ -57,6 +59,8 @@ export const api = {
   regenerateGreenhouseKey: (ghId) =>
     jsonFetch(`/api/admin/greenhouses/${ghId}/regenerate-key`, { method: "POST" }),
   deleteGreenhouseAsAdmin: (ghId) => jsonFetch(`/api/admin/greenhouses/${ghId}`, { method: "DELETE" }),
+  renameGreenhouseAsAdmin: (ghId, name) =>
+    jsonFetch(`/api/admin/greenhouses/${ghId}`, { method: "PATCH", body: JSON.stringify({ name }) }),
 
   sendContactMessage: (name, email, message) =>
     jsonFetch("/api/contact", { method: "POST", body: JSON.stringify({ name, email, message }) }),
