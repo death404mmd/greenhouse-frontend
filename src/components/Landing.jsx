@@ -81,8 +81,24 @@ function Hero({ onEnterApp }) {
         margin: "0 auto",
         padding: "80px 24px 100px",
         textAlign: "center",
+        position: "relative",
       }}
     >
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: "-10%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 560,
+          height: 380,
+          background: "radial-gradient(ellipse at center, rgba(143,191,111,0.16) 0%, rgba(143,191,111,0) 70%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+      <div style={{ position: "relative", zIndex: 1 }}>
       <div
         style={{
           display: "inline-flex",
@@ -145,7 +161,38 @@ function Hero({ onEnterApp }) {
       >
         Open the control panel <ArrowRight size={16} />
       </button>
+
+      <StatsRow />
+      </div>
     </header>
+  );
+}
+
+function StatsRow() {
+  const stats = [
+    { value: "5s", label: "sensor refresh rate" },
+    { value: "24/7", label: "cloud-hosted control" },
+    { value: "0", label: "manual interventions needed" },
+  ];
+  return (
+    <div
+      style={{
+        marginTop: 56,
+        display: "flex",
+        justifyContent: "center",
+        gap: 40,
+        flexWrap: "wrap",
+      }}
+    >
+      {stats.map((s) => (
+        <div key={s.label}>
+          <div className="mono" style={{ fontSize: 26, fontWeight: 600, color: "var(--accent-leaf)" }}>
+            {s.value}
+          </div>
+          <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>{s.label}</div>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -209,7 +256,71 @@ function AboutProject() {
           </div>
         ))}
       </div>
+
+      <ArchitectureDiagram />
     </section>
+  );
+}
+
+function ArchitectureDiagram() {
+  const nodes = [
+    { label: "ESP32", sub: "sensors + relays", color: "var(--accent-amber)" },
+    { label: "Node.js", sub: "decision engine · Render", color: "var(--accent-leaf)" },
+    { label: "Postgres", sub: "Supabase", color: "var(--accent-water)" },
+    { label: "React panel", sub: "live dashboard", color: "var(--accent-leaf)" },
+  ];
+  return (
+    <div
+      style={{
+        marginTop: 24,
+        background: "var(--bg-panel)",
+        border: "1px solid var(--border-soft)",
+        borderRadius: "var(--radius-lg)",
+        padding: "28px 20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        flexWrap: "wrap",
+      }}
+    >
+      {nodes.map((n, i) => (
+        <React.Fragment key={n.label}>
+          <div style={{ textAlign: "center", minWidth: 110 }}>
+            <div
+              style={{
+                width: 54,
+                height: 54,
+                margin: "0 auto 8px",
+                borderRadius: "50%",
+                border: `2px solid ${n.color}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 11,
+                fontWeight: 700,
+                color: n.color,
+              }}
+            >
+              {n.label.slice(0, 2).toUpperCase()}
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 700 }}>{n.label}</div>
+            <div style={{ fontSize: 11, color: "var(--text-faint)" }}>{n.sub}</div>
+          </div>
+          {i < nodes.length - 1 && (
+            <div
+              aria-hidden
+              style={{
+                width: 32,
+                height: 2,
+                background: "var(--border-strong)",
+                marginBottom: 30,
+              }}
+            />
+          )}
+        </React.Fragment>
+      ))}
+    </div>
   );
 }
 

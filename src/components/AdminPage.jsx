@@ -10,6 +10,8 @@ export default function AdminPage({ onBack }) {
   const [error, setError] = useState("");
   const [visibleKeys, setVisibleKeys] = useState({}); // { greenhouseId: true }
   const [busyId, setBusyId] = useState(null);
+  const [renamingId, setRenamingId] = useState(null);
+  const [renameDraft, setRenameDraft] = useState("");
 
   function load() {
     api
@@ -53,6 +55,23 @@ export default function AdminPage({ onBack }) {
     setBusyId(ghId);
     try {
       await api.deleteGreenhouseAsAdmin(ghId);
+      load();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function handleRename(ghId) {
+    if (!renameDraft.trim()) {
+      setRenamingId(null);
+      return;
+    }
+    setBusyId(ghId);
+    try {
+      await api.renameGreenhouseAsAdmin(ghId, renameDraft.trim());
+      setRenamingId(null);
       load();
     } catch (e) {
       setError(e.message);
@@ -130,7 +149,37 @@ export default function AdminPage({ onBack }) {
                             flexWrap: "wrap",
                           }}
                         >
-                          <span style={{ fontWeight: 600, fontSize: 13, minWidth: 120 }}>{gh.name}</span>
+                          <span style={{ fontWeight: 600, fontSize: 13, minWidth: 120 }}>
+                            {renamingId === gh.id ? (
+                              <input
+                                autoFocus
+                                value={renameDraft}
+                                onChange={(e) => setRenameDraft(e.target.value)}
+                                onBlur={() => handleRename(gh.id)}
+                                onKeyDown={(e) => e.key === "Enter" && handleRename(gh.id)}
+                                style={{
+                                  background: "var(--bg-panel)",
+                                  border: "1px solid var(--accent-leaf)",
+                                  borderRadius: "var(--radius-sm)",
+                                  color: "var(--text-primary)",
+                                  padding: "3px 6px",
+                                  fontSize: 13,
+                                  width: 140,
+                                }}
+                              />
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  setRenamingId(gh.id);
+                                  setRenameDraft(gh.name);
+                                }}
+                                title="Click to rename"
+                                style={{ background: "none", border: "none", color: "inherit", font: "inherit", padding: 0, cursor: "pointer" }}
+                              >
+                                {gh.name}
+                              </button>
+                            )}
+                          </span>
                           <span
                             className="mono"
                             style={{

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Fan, Flame, Droplets, Wifi, WifiOff, LogOut, ArrowLeftRight, ShieldCheck } from "lucide-react";
+import { Fan, Flame, Droplets, Wifi, WifiOff, LogOut, ArrowLeftRight, ShieldCheck, Pencil, Plus } from "lucide-react";
 import ClimateGauge from "./ClimateGauge.jsx";
 import RelayCard from "./RelayCard.jsx";
 import ProfileSelector from "./ProfileSelector.jsx";
 import SensorChart from "./SensorChart.jsx";
+import CropProfileModal from "./CropProfileModal.jsx";
 import { useGreenhouseSocket, useHistory, api } from "../api.js";
 import { supabase } from "../supabaseClient.js";
 
@@ -12,10 +13,20 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
   const history = useHistory(greenhouseId);
   const [profiles, setProfiles] = useState([]);
   const [manualOverrides, setManualOverrides] = useState({ fan: null, heater: null, pump: null });
+  const [greenhouseName, setGreenhouseName] = useState("");
+  const [renaming, setRenaming] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  function refreshProfiles() {
+    api.getProfiles(greenhouseId).then(setProfiles);
+  }
 
   useEffect(() => {
-    api.getProfiles(greenhouseId).then(setProfiles);
-    api.getStatus(greenhouseId).then((s) => setManualOverrides(s.manualOverrides));
+    refreshProfiles();
+    api.getStatus(greenhouseId).then((s) => {
+      setManualOverrides(s.manualOverrides);
+      setGreenhouseName(s.name || "");
+    });
   }, [greenhouseId]);
 
   async function handleSelectProfile(profileId) {
@@ -27,12 +38,51 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
     setManualOverrides(res.manualOverrides);
   }
 
+  async function handleRename(newName) {
+    if (!newName.trim() || newName === greenhouseName) {
+      setRenaming(false);
+      return;
+    }
+    const res = await api.renameGreenhouse(greenhouseId, newName.trim());
+    setGreenhouseName(res.name);
+    setRenaming(false);
+  }
+
   return (
     <div style={{ maxWidth: 1040, margin: "0 auto", padding: "28px 20px 60px" }}>
-      <Header connected={connected} onSwitchGreenhouse={onSwitchGreenhouse} isAdmin={isAdmin} onOpenAdmin={onOpenAdmin} />
+      <Header
+        connected={connected}
+        onSwitchGreenhouse={onSwitchGreenhouse}
+        isAdmin={isAdmin}
+        onOpenAdmin={onOpenAdmin}
+        greenhouseName={greenhouseName}
+        renaming={renaming}
+        onStartRename={() => setRenaming(true)}
+        onRename={handleRename}
+      />
 
       <section style={{ marginTop: 28 }}>
-        <SectionLabel>Active Crop</SectionLabel>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <SectionLabel>Active Crop</SectionLabel>
+          <button
+            onClick={() => setModalOpen(true)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              padding: "5px 10px",
+              borderRadius: "var(--radius-lg)",
+              border: "1px solid var(--border-soft)",
+              background: "var(--bg-panel)",
+              color: "var(--accent-leaf)",
+              fontSize: 12,
+              fontWeight: 600,
+              marginBottom: 12,
+            }}
+          >
+            <Plus size={13} /> Add crop
+          </button>
+        </div>
         <ProfileSelector
           profiles={profiles}
           activeId={activeProfile?.id}
@@ -134,15 +184,60 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
         <SectionLabel>History</SectionLabel>
         <SensorChart history={history} />
       </section>
+
+      {modalOpen && (
+        <CropProfileModal
+          greenhouseId={greenhouseId}
+          existing={null}
+          onClose={() => setModalOpen(false)}
+          onSaved={() => {
+            setModalOpen(false);
+            refreshProfiles();
+          }}
+        />
+      )}
     </div>
   );
 }
 
-function Header({ connected, onSwitchGreenhouse, isAdmin, onOpenAdmin }) {
+function Header({ connected, onSwitchGreenhouse, isAdmin, onOpenAdmin, greenhouseName, renaming, onStartRename, onRename }) {
+  const [draft, setDraft] = useState(greenhouseName);
+
+  useEffect(() => setDraft(greenhouseName), [greenhouseName]);
+
   return (
     <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
       <div>
-        <h1 style={{ fontSize: 24, fontWeight: 800 }}>Smart Greenhouse</h1>
+        {renaming ? (
+          <input
+            autoFocus
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={() => onRename(draft)}
+            onKeyDown={(e) => e.key === "Enter" && onRename(draft)}
+            style={{
+              fontSize: 24,
+              fontWeight: 800,
+              background: "var(--bg-panel-raised)",
+              border: "1px solid var(--accent-leaf)",
+              borderRadius: "var(--radius-sm)",
+              color: "var(--text-primary)",
+              padding: "2px 8px",
+              fontFamily: "var(--font-display)",
+            }}
+          />
+        ) : (
+          <h1 style={{ fontSize: 24, fontWeight: 800, display: "flex", alignItems: "center", gap: 8 }}>
+            {greenhouseName || "Smart Greenhouse"}
+            <button
+              onClick={onStartRename}
+              title="Rename"
+              style={{ background: "none", border: "none", color: "var(--text-faint)", display: "flex" }}
+            >
+              <Pencil size={14} />
+            </button>
+          </h1>
+        )}
         <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 4 }}>
           Automatic control based on the selected crop
         </p>
