@@ -6,14 +6,14 @@
 --------------------------------------------------------- */
 :root {
   --bg-deep: #0e1512;
-  --bg-panel: #161f1a;
-  --bg-panel-raised: #1d2820;
-  --border-soft: rgba(231, 237, 229, 0.09);
-  --border-strong: rgba(231, 237, 229, 0.18);
+  --bg-panel: #182219;
+  --bg-panel-raised: #212e23;
+  --border-soft: rgba(231, 237, 229, 0.12);
+  --border-strong: rgba(231, 237, 229, 0.24);
 
-  --text-primary: #e7ede5;
-  --text-muted: #8fa087;
-  --text-faint: #5f6e58;
+  --text-primary: #f2f6f0;
+  --text-muted: #a3b39a;
+  --text-faint: #6f7e67;
 
   --accent-leaf: #8fbf6f;
   --accent-leaf-dim: rgba(143, 191, 111, 0.14);
@@ -42,6 +42,7 @@ body,
 #root {
   height: 100%;
   margin: 0;
+  overflow-x: hidden;
 }
 
 body {
