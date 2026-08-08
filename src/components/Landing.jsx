@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Sprout, Github, Mail, ArrowRight, Cpu, Cloud, Gauge } from "lucide-react";
+import { Sprout, Github, Mail, ArrowRight, Cpu, Cloud, Gauge, GraduationCap } from "lucide-react";
 import { api } from "../api.js";
 
 export default function Landing({ onEnterApp }) {
@@ -8,6 +8,7 @@ export default function Landing({ onEnterApp }) {
       <TopNav onEnterApp={onEnterApp} />
       <Hero onEnterApp={onEnterApp} />
       <AboutProject />
+      <Skills />
       <AboutMe />
       <Contact />
       <Footer />
@@ -79,7 +80,7 @@ function Hero({ onEnterApp }) {
       style={{
         maxWidth: 1040,
         margin: "0 auto",
-        padding: "80px 24px 100px",
+        padding: "80px 24px 60px",
         textAlign: "center",
         position: "relative",
       }}
@@ -92,6 +93,7 @@ function Hero({ onEnterApp }) {
           left: "50%",
           transform: "translateX(-50%)",
           width: 560,
+          maxWidth: "90vw",
           height: 380,
           background: "radial-gradient(ellipse at center, rgba(143,191,111,0.16) 0%, rgba(143,191,111,0) 70%)",
           pointerEvents: "none",
@@ -99,70 +101,71 @@ function Hero({ onEnterApp }) {
         }}
       />
       <div style={{ position: "relative", zIndex: 1 }}>
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "6px 14px",
-          borderRadius: "var(--radius-lg)",
-          border: "1px solid var(--border-soft)",
-          background: "var(--bg-panel)",
-          color: "var(--accent-leaf)",
-          fontSize: 12,
-          fontWeight: 600,
-          marginBottom: 28,
-        }}
-      >
-        <Sprout size={13} /> Full-stack IoT project
-      </div>
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "6px 14px",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid var(--border-soft)",
+            background: "var(--bg-panel)",
+            color: "var(--accent-leaf)",
+            fontSize: 12,
+            fontWeight: 600,
+            marginBottom: 28,
+          }}
+        >
+          <Sprout size={13} /> Full-stack IoT project
+        </div>
 
-      <h1
-        style={{
-          fontSize: "clamp(32px, 6vw, 56px)",
-          fontWeight: 700,
-          lineHeight: 1.15,
-          marginBottom: 20,
-        }}
-      >
-        A greenhouse that thinks
-        <br />
-        <span style={{ color: "var(--accent-leaf)" }}>for itself.</span>
-      </h1>
+        <h1
+          style={{
+            fontSize: "clamp(32px, 6vw, 56px)",
+            fontWeight: 700,
+            lineHeight: 1.15,
+            marginBottom: 20,
+          }}
+        >
+          A greenhouse that thinks
+          <br />
+          <span style={{ color: "var(--accent-leaf)" }}>for itself.</span>
+        </h1>
 
-      <p
-        style={{
-          fontSize: 17,
-          color: "var(--text-muted)",
-          maxWidth: 560,
-          margin: "0 auto 36px",
-          lineHeight: 1.6,
-        }}
-      >
-        An ESP32-based automation system that reads live climate data and controls
-        fans, heaters, and irrigation on its own - built end to end, from soldered
-        relays to a cloud backend and a live control panel.
-      </p>
+        <p
+          style={{
+            fontSize: 17,
+            color: "var(--text-muted)",
+            maxWidth: 560,
+            margin: "0 auto 36px",
+            lineHeight: 1.6,
+          }}
+        >
+          An ESP32-based automation system that reads live climate data and controls
+          fans, heaters, and irrigation on its own - built end to end, from soldered
+          relays to a cloud backend and a live control panel.
+        </p>
 
-      <button
-        onClick={onEnterApp}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "13px 26px",
-          borderRadius: "var(--radius-sm)",
-          border: "none",
-          background: "var(--accent-leaf)",
-          color: "var(--bg-deep)",
-          fontWeight: 700,
-          fontSize: 15,
-        }}
-      >
-        Open the control panel <ArrowRight size={16} />
-      </button>
+        <button
+          onClick={onEnterApp}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "13px 26px",
+            borderRadius: "var(--radius-sm)",
+            border: "none",
+            background: "var(--accent-leaf)",
+            color: "var(--bg-deep)",
+            fontWeight: 700,
+            fontSize: 15,
+          }}
+        >
+          Open the control panel <ArrowRight size={16} />
+        </button>
 
-      <StatsRow />
+        <StatsRow />
+        <DashboardPreview />
       </div>
     </header>
   );
@@ -196,6 +199,58 @@ function StatsRow() {
   );
 }
 
+function DashboardPreview() {
+  // Placeholder for a real screenshot of the live dashboard.
+  // Drop your screenshot at: frontend/public/dashboard-screenshot.png
+  // and it will show up here automatically (this <img> already points to it).
+  return (
+    <div
+      style={{
+        marginTop: 56,
+        borderRadius: "var(--radius-lg)",
+        border: "1px solid var(--border-strong)",
+        overflow: "hidden",
+        boxShadow: "0 30px 60px -20px rgba(0,0,0,0.5)",
+        background: "var(--bg-panel)",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          gap: 6,
+          padding: "10px 14px",
+          borderBottom: "1px solid var(--border-soft)",
+        }}
+      >
+        <span style={{ width: 9, height: 9, borderRadius: "50%", background: "var(--accent-danger)" }} />
+        <span style={{ width: 9, height: 9, borderRadius: "50%", background: "var(--accent-amber)" }} />
+        <span style={{ width: 9, height: 9, borderRadius: "50%", background: "var(--accent-leaf)" }} />
+      </div>
+      <img
+        src="/dashboard-screenshot.png"
+        alt="Smart Greenhouse dashboard screenshot"
+        style={{ display: "block", width: "100%", height: "auto" }}
+        onError={(e) => {
+          e.target.style.display = "none";
+          e.target.nextSibling.style.display = "flex";
+        }}
+      />
+      <div
+        style={{
+          display: "none",
+          height: 280,
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--text-faint)",
+          fontSize: 13,
+        }}
+      >
+        Dashboard screenshot goes here (public/dashboard-screenshot.png)
+      </div>
+    </div>
+  );
+}
+
 function AboutProject() {
   const points = [
     {
@@ -216,7 +271,7 @@ function AboutProject() {
   ];
 
   return (
-    <section style={{ maxWidth: 1040, margin: "0 auto", padding: "0 24px 90px" }}>
+    <section style={{ maxWidth: 1040, margin: "0 auto", padding: "40px 24px 90px" }}>
       <SectionHeading eyebrow="What it does">The project</SectionHeading>
       <div
         style={{
@@ -324,6 +379,51 @@ function ArchitectureDiagram() {
   );
 }
 
+function Skills() {
+  const skills = [
+    "ESP32 / Arduino C++",
+    "Node.js & Express",
+    "WebSocket (real-time)",
+    "React",
+    "PostgreSQL",
+    "Supabase (Auth + DB)",
+    "Render (cloud hosting)",
+    "REST API design",
+    "Embedded systems / relays",
+  ];
+  return (
+    <section style={{ maxWidth: 1040, margin: "0 auto", padding: "0 24px 90px" }}>
+      <SectionHeading eyebrow="Toolbox">Skills used in this project</SectionHeading>
+      <div
+        style={{
+          marginTop: 24,
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: 10,
+        }}
+      >
+        {skills.map((s) => (
+          <span
+            key={s}
+            style={{
+              padding: "8px 14px",
+              borderRadius: "var(--radius-lg)",
+              border: "1px solid var(--border-strong)",
+              background: "var(--bg-panel)",
+              color: "var(--text-primary)",
+              fontSize: 12.5,
+              fontWeight: 500,
+            }}
+          >
+            {s}
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function AboutMe() {
   return (
     <section style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px 90px" }}>
@@ -356,6 +456,15 @@ function AboutMe() {
           </a>
           <a href="mailto:mohammadmahdi.heibatian@gmail.com" style={linkButtonStyle}>
             <Mail size={15} /> Email me
+          </a>
+          {/* Replace this href with your real ResearchGate profile URL */}
+          <a
+            href="https://www.researchgate.net/profile/YOUR_PROFILE"
+            target="_blank"
+            rel="noreferrer"
+            style={linkButtonStyle}
+          >
+            <GraduationCap size={15} /> ResearchGate
           </a>
         </div>
       </div>
