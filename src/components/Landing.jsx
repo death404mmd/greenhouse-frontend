@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Sprout, Github, Mail, ArrowRight, Cpu, Cloud, Gauge, GraduationCap } from "lucide-react";
 import { api } from "../api.js";
+import AskAIWidget from "./AskAIWidget.jsx";
 
 export default function Landing({ onEnterApp }) {
   return (
@@ -9,6 +10,7 @@ export default function Landing({ onEnterApp }) {
       <Hero onEnterApp={onEnterApp} />
       <AboutProject />
       <Skills />
+      <AskAIWidget />
       <AboutMe />
       <Contact />
       <Footer />

@@ -67,6 +67,8 @@ export const api = {
   getMessages: () => jsonFetch("/api/admin/messages"),
   markMessageRead: (id) => jsonFetch(`/api/admin/messages/${id}`, { method: "PATCH" }),
   deleteMessage: (id) => jsonFetch(`/api/admin/messages/${id}`, { method: "DELETE" }),
+
+  askAI: (question) => jsonFetch("/api/ask-ai", { method: "POST", body: JSON.stringify({ question }) }),
 };
 
 export function useGreenhouseSocket(greenhouseId) {
