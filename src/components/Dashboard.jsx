@@ -103,6 +103,7 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
           display: "flex",
           gap: 24,
           flexWrap: "wrap",
+          justifyContent: "center",
           background: "var(--bg-panel)",
           border: "1px solid var(--border-soft)",
           borderRadius: "var(--radius-lg)",
@@ -139,6 +140,60 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
           safeMax={activeProfile?.soilMoistureMax}
           accentColor="var(--accent-leaf)"
         />
+        <ClimateGauge
+          label="Light"
+          value={sensorData.lightLux}
+          unit="lux"
+          min={0}
+          max={2000}
+          accentColor="var(--accent-amber)"
+        />
+        <ClimateGauge
+          label="Wind Speed"
+          value={sensorData.windSpeed}
+          unit="km/h"
+          min={0}
+          max={60}
+          accentColor="var(--accent-water)"
+        />
+        <ClimateGauge
+          label="CO2"
+          value={sensorData.co2Ppm}
+          unit="ppm"
+          min={300}
+          max={2000}
+          accentColor="var(--accent-leaf)"
+        />
+        <ClimateGauge
+          label="Outside Temp"
+          value={sensorData.outsideTemp}
+          unit="°C"
+          min={-10}
+          max={45}
+          accentColor="var(--accent-amber)"
+        />
+        <ClimateGauge
+          label="Water Tank"
+          value={sensorData.waterTankPct}
+          unit="%"
+          min={0}
+          max={100}
+          accentColor="var(--accent-water)"
+        />
+      </section>
+
+      <section style={{ marginTop: 24 }}>
+        <SectionLabel>Water Usage</SectionLabel>
+        <div
+          style={{
+            display: "flex",
+            gap: 14,
+            flexWrap: "wrap",
+          }}
+        >
+          <StatCard label="Current flow" value={sensorData.waterFlow} unit="L/min" />
+          <StatCard label="Total used" value={sensorData.waterUsedTotal} unit="L" />
+        </div>
       </section>
 
       <section style={{ marginTop: 24 }}>
@@ -294,6 +349,27 @@ function IconButton({ title, onClick, children }) {
     >
       {children}
     </button>
+  );
+}
+
+function StatCard({ label, value, unit }) {
+  const hasValue = typeof value === "number" && !Number.isNaN(value);
+  return (
+    <div
+      style={{
+        background: "var(--bg-panel)",
+        border: "1px solid var(--border-soft)",
+        borderRadius: "var(--radius-md)",
+        padding: "16px 22px",
+        minWidth: 140,
+      }}
+    >
+      <div className="mono" style={{ fontSize: 22, fontWeight: 600, color: "var(--accent-water)" }}>
+        {hasValue ? value.toFixed(1) : "—"}
+        <span style={{ fontSize: 13, color: "var(--text-muted)" }}> {unit}</span>
+      </div>
+      <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>{label}</div>
+    </div>
   );
 }
 
