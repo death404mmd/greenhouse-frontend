@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Sparkles, Send } from "lucide-react";
 import { api } from "../api.js";
 
@@ -6,6 +6,11 @@ export default function AskAIWidget() {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]); // { role: "user" | "ai", text }
   const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, loading]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -77,6 +82,7 @@ export default function AskAIWidget() {
                 Thinking...
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
         )}
 
