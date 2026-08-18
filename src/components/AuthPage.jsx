@@ -25,9 +25,6 @@ export default function AuthPage() {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
 
-        // Remember the greenhouse name so it can be auto-created the moment
-        // this account signs in for the first time (right after confirming
-        // their email) - the person only has to fill this in once, here.
         if (greenhouseName.trim()) {
           localStorage.setItem("pendingGreenhouseName", greenhouseName.trim());
         }
@@ -35,7 +32,12 @@ export default function AuthPage() {
         setNotice("Account created. Check your email to confirm it, then sign in - your greenhouse will be ready right away.");
       }
     } catch (err) {
-      setError(err.message || "Something went wrong");
+      console.error("Auth error:", err);
+      if (mode === "signin" && err.message && err.message.toLowerCase().includes("invalid login credentials")) {
+        setError("Wrong email or password. If you don't have an account yet, switch to Sign Up above.");
+      } else {
+        setError(err.message || `Something went wrong (${err.name || "unknown error"})`);
+      }
     } finally {
       setLoading(false);
     }
