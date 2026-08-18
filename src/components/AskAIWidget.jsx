@@ -123,7 +123,7 @@ export default function AskAIWidget() {
           </button>
         </form>
         <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 10, fontSize: 11, color: "var(--text-faint)" }}>
-          <Sparkles size={11} /> Powered by Claude
+          <Sparkles size={11} /> Powered by Groq/Claude
         </div>
       </div>
     </section>
