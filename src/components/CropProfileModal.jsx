@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import { X, Trash2 } from "lucide-react";
 import { api } from "../api.js";
 
-export default function CropProfileModal({ greenhouseId, existing, onClose, onSaved }) {
+export default function CropProfileModal({ greenhouseId, existing, onClose, onSaved, onDeleted }) {
   const [name, setName] = useState(existing ? existing.name : "");
   const [tempMin, setTempMin] = useState(existing ? existing.tempMin : 18);
   const [tempMax, setTempMax] = useState(existing ? existing.tempMax : 27);
@@ -11,6 +11,7 @@ export default function CropProfileModal({ greenhouseId, existing, onClose, onSa
   const [soilMoistureMin, setSoilMoistureMin] = useState(existing ? existing.soilMoistureMin : 60);
   const [soilMoistureMax, setSoilMoistureMax] = useState(existing ? existing.soilMoistureMax : 80);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(e) {
@@ -33,6 +34,19 @@ export default function CropProfileModal({ greenhouseId, existing, onClose, onSa
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!window.confirm(`Delete "${existing.name}"? This cannot be undone.`)) return;
+    setDeleting(true);
+    setError("");
+    try {
+      await api.deleteProfile(greenhouseId, existing.id);
+      onDeleted();
+    } catch (err) {
+      setError(err.message);
+      setDeleting(false);
     }
   }
 
@@ -63,12 +77,24 @@ export default function CropProfileModal({ greenhouseId, existing, onClose, onSa
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
           <h2 style={{ fontSize: 17, fontWeight: 700 }}>{existing ? "Edit crop" : "Add a crop"}</h2>
-          <button
-            onClick={onClose}
-            style={{ background: "none", border: "none", color: "var(--text-muted)", padding: 4 }}
-          >
-            <X size={18} />
-          </button>
+          <div style={{ display: "flex", gap: 6 }}>
+            {existing && (
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                title="Delete this crop"
+                style={{ background: "none", border: "none", color: "var(--accent-danger)", padding: 4, opacity: deleting ? 0.5 : 1 }}
+              >
+                <Trash2 size={17} />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              style={{ background: "none", border: "none", color: "var(--text-muted)", padding: 4 }}
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -107,7 +133,7 @@ export default function CropProfileModal({ greenhouseId, existing, onClose, onSa
 
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || deleting}
             style={{
               marginTop: 4,
               padding: "11px 0",

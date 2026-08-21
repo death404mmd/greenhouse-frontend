@@ -16,6 +16,7 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
   const [greenhouseName, setGreenhouseName] = useState("");
   const [renaming, setRenaming] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(null);
 
   function refreshProfiles() {
     api.getProfiles(greenhouseId).then(setProfiles);
@@ -87,6 +88,7 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
           profiles={profiles}
           activeId={activeProfile?.id}
           onSelect={handleSelectProfile}
+          onEdit={(p) => setEditingProfile(p)}
         />
         {activeProfile && (
           <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 10 }}>
@@ -240,13 +242,21 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
         <SensorChart history={history} />
       </section>
 
-      {modalOpen && (
+      {(modalOpen || editingProfile) && (
         <CropProfileModal
           greenhouseId={greenhouseId}
-          existing={null}
-          onClose={() => setModalOpen(false)}
+          existing={editingProfile}
+          onClose={() => {
+            setModalOpen(false);
+            setEditingProfile(null);
+          }}
           onSaved={() => {
             setModalOpen(false);
+            setEditingProfile(null);
+            refreshProfiles();
+          }}
+          onDeleted={() => {
+            setEditingProfile(null);
             refreshProfiles();
           }}
         />
