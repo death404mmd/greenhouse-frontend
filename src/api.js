@@ -73,6 +73,7 @@ export const api = {
 
 export function useGreenhouseSocket(greenhouseId) {
   const [connected, setConnected] = useState(false);
+  const [esp32Connected, setEsp32Connected] = useState(false);
   const [sensorData, setSensorData] = useState({});
   const [relayState, setRelayState] = useState({});
   const [activeProfile, setActiveProfile] = useState(null);
@@ -104,12 +105,16 @@ export function useGreenhouseSocket(greenhouseId) {
           setRelayState(msg.relayState || {});
           setActiveProfile(msg.activeProfile || null);
           setReasons(msg.reasons || {});
+          if (typeof msg.esp32Connected === "boolean") setEsp32Connected(msg.esp32Connected);
+        } else if (msg.type === "esp32_status") {
+          setEsp32Connected(!!msg.esp32Connected);
         }
       };
 
       ws.onclose = () => {
         if (cancelled) return;
         setConnected(false);
+        setEsp32Connected(false);
         reconnectTimer = setTimeout(connect, 3000);
       };
 
@@ -126,7 +131,7 @@ export function useGreenhouseSocket(greenhouseId) {
     };
   }, [greenhouseId]);
 
-  return { connected, sensorData, relayState, activeProfile, reasons };
+  return { connected, esp32Connected, sensorData, relayState, activeProfile, reasons };
 }
 
 export function useHistory(greenhouseId, pollIntervalMs = 15000) {

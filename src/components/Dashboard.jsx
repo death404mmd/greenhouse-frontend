@@ -9,7 +9,7 @@ import { useGreenhouseSocket, useHistory, api } from "../api.js";
 import { supabase } from "../supabaseClient.js";
 
 export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, onOpenAdmin }) {
-  const { connected, sensorData, relayState, activeProfile, reasons } = useGreenhouseSocket(greenhouseId);
+  const { connected, esp32Connected, sensorData, relayState, activeProfile, reasons } = useGreenhouseSocket(greenhouseId);
   const history = useHistory(greenhouseId);
   const [profiles, setProfiles] = useState([]);
   const [manualOverrides, setManualOverrides] = useState({ fan: null, heater: null, pump: null });
@@ -53,6 +53,7 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
     <div style={{ maxWidth: 1040, margin: "0 auto", padding: "28px 20px 60px" }}>
       <Header
         connected={connected}
+        esp32Connected={esp32Connected}
         onSwitchGreenhouse={onSwitchGreenhouse}
         isAdmin={isAdmin}
         onOpenAdmin={onOpenAdmin}
@@ -265,7 +266,7 @@ export default function Dashboard({ greenhouseId, onSwitchGreenhouse, isAdmin, o
   );
 }
 
-function Header({ connected, onSwitchGreenhouse, isAdmin, onOpenAdmin, greenhouseName, renaming, onStartRename, onRename }) {
+function Header({ connected, esp32Connected, onSwitchGreenhouse, isAdmin, onOpenAdmin, greenhouseName, renaming, onStartRename, onRename }) {
   const [draft, setDraft] = useState(greenhouseName);
 
   useEffect(() => setDraft(greenhouseName), [greenhouseName]);
@@ -315,14 +316,14 @@ function Header({ connected, onSwitchGreenhouse, isAdmin, onOpenAdmin, greenhous
             gap: 8,
             padding: "8px 14px",
             borderRadius: "var(--radius-lg)",
-            background: connected ? "var(--accent-leaf-dim)" : "var(--accent-danger-dim)",
-            color: connected ? "var(--accent-leaf)" : "var(--accent-danger)",
+            background: esp32Connected ? "var(--accent-leaf-dim)" : "var(--accent-danger-dim)",
+            color: esp32Connected ? "var(--accent-leaf)" : "var(--accent-danger)",
             fontSize: 13,
             fontWeight: 600,
           }}
         >
-          {connected ? <Wifi size={15} /> : <WifiOff size={15} />}
-          {connected ? "Connected to device" : "Connecting..."}
+          {esp32Connected ? <Wifi size={15} /> : <WifiOff size={15} />}
+          {esp32Connected ? "Device connected" : connected ? "Device offline" : "Connecting to server..."}
         </div>
         {isAdmin && (
           <IconButton title="Admin panel" onClick={onOpenAdmin}>
