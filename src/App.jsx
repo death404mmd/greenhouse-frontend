@@ -3,6 +3,7 @@ import { supabase, markSessionStart, clearSessionStart, isSessionExpired } from 
 import { api } from "./api.js";
 import Landing from "./components/Landing.jsx";
 import AuthPage from "./components/AuthPage.jsx";
+import ResetPasswordPage from "./components/ResetPasswordPage.jsx";
 import GreenhousePicker from "./components/GreenhousePicker.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import AdminPage from "./components/AdminPage.jsx";
@@ -12,6 +13,7 @@ const SESSION_CHECK_INTERVAL_MS = 60 * 1000; // check once a minute
 export default function App() {
   const [session, setSession] = useState(undefined); // undefined = loading, null = signed out
   const [showAuth, setShowAuth] = useState(false);
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
   const [greenhouseId, setGreenhouseId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [view, setView] = useState("greenhouses"); // "greenhouses" | "admin"
@@ -30,6 +32,9 @@ export default function App() {
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, newSession) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setPasswordRecovery(true);
+      }
       if (event === "SIGNED_IN") markSessionStart();
       setSession(newSession);
       if (!newSession) {
@@ -41,8 +46,6 @@ export default function App() {
       }
     });
 
-    // Periodically check whether the session has outlived its allowed lifetime,
-    // even if the tab has just been sitting open the whole time.
     const interval = setInterval(() => {
       if (isSessionExpired()) {
         clearSessionStart();
@@ -67,6 +70,12 @@ export default function App() {
 
   if (session === undefined) {
     return <CenteredMessage>Loading...</CenteredMessage>;
+  }
+
+  // Someone clicked the "reset password" link in their email - let them set
+  // a new password before anything else happens.
+  if (passwordRecovery) {
+    return <ResetPasswordPage onDone={() => setPasswordRecovery(false)} />;
   }
 
   if (!session) {
