@@ -3,7 +3,7 @@ import { Sprout, Eye, EyeOff } from "lucide-react";
 import { supabase } from "../supabaseClient.js";
 
 export default function AuthPage() {
-  const [mode, setMode] = useState("signin"); // "signin" | "signup"
+  const [mode, setMode] = useState("signin"); // "signin" | "signup" | "forgot"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +21,12 @@ export default function AuthPage() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+      } else if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin,
+        });
+        if (error) throw error;
+        setNotice("If an account exists for that email, a reset link has been sent. Check your inbox.");
       } else {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
@@ -81,14 +87,22 @@ export default function AuthPage() {
           <h1 style={{ fontSize: 20, fontWeight: 700 }}>Smart Greenhouse</h1>
         </div>
 
-        <div style={{ display: "flex", gap: 6, marginBottom: 20 }}>
-          <TabButton active={mode === "signin"} onClick={() => setMode("signin")}>
-            Sign In
-          </TabButton>
-          <TabButton active={mode === "signup"} onClick={() => setMode("signup")}>
-            Sign Up
-          </TabButton>
-        </div>
+        {mode !== "forgot" && (
+          <div style={{ display: "flex", gap: 6, marginBottom: 20 }}>
+            <TabButton active={mode === "signin"} onClick={() => setMode("signin")}>
+              Sign In
+            </TabButton>
+            <TabButton active={mode === "signup"} onClick={() => setMode("signup")}>
+              Sign Up
+            </TabButton>
+          </div>
+        )}
+
+        {mode === "forgot" && (
+          <p style={{ fontSize: 13, color: "var(--text-muted)", marginBottom: 18 }}>
+            Enter your email and we'll send you a link to set a new password.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <Field label="Email">
@@ -102,38 +116,62 @@ export default function AuthPage() {
             />
           </Field>
 
-          <Field label="Password">
-            <div style={{ position: "relative" }}>
-              <input
-                type={showPassword ? "text" : "password"}
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{ ...inputStyle, width: "100%", paddingRight: 40 }}
-                placeholder="At least 6 characters"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                title={showPassword ? "Hide password" : "Show password"}
-                style={{
-                  position: "absolute",
-                  right: 8,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "none",
-                  border: "none",
-                  color: "var(--text-muted)",
-                  display: "flex",
-                  alignItems: "center",
-                  padding: 4,
-                }}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </Field>
+          {mode !== "forgot" && (
+            <Field label="Password">
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{ ...inputStyle, width: "100%", paddingRight: 40 }}
+                  placeholder="At least 6 characters"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  title={showPassword ? "Hide password" : "Show password"}
+                  style={{
+                    position: "absolute",
+                    right: 8,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    color: "var(--text-muted)",
+                    display: "flex",
+                    alignItems: "center",
+                    padding: 4,
+                  }}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </Field>
+          )}
+
+          {mode === "signin" && (
+            <button
+              type="button"
+              onClick={() => {
+                setMode("forgot");
+                setError("");
+                setNotice("");
+              }}
+              style={{
+                alignSelf: "flex-end",
+                background: "none",
+                border: "none",
+                color: "var(--text-muted)",
+                fontSize: 12.5,
+                padding: 0,
+                marginTop: -6,
+              }}
+            >
+              Forgot password?
+            </button>
+          )}
 
           {mode === "signup" && (
             <Field label="Greenhouse name">
@@ -166,8 +204,34 @@ export default function AuthPage() {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
+            {loading
+              ? "Please wait..."
+              : mode === "signin"
+              ? "Sign In"
+              : mode === "forgot"
+              ? "Send reset link"
+              : "Create Account"}
           </button>
+
+          {mode === "forgot" && (
+            <button
+              type="button"
+              onClick={() => {
+                setMode("signin");
+                setError("");
+                setNotice("");
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                color: "var(--text-muted)",
+                fontSize: 12.5,
+                padding: 0,
+              }}
+            >
+              ← Back to Sign In
+            </button>
+          )}
         </form>
       </div>
     </div>
