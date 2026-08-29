@@ -24,6 +24,10 @@ const METRICS = [
   { key: "co2Ppm", label: "CO2", unit: "ppm", color: "var(--accent-leaf)" },
   { key: "outsideTemp", label: "Outside Temp", unit: "°C", color: "var(--accent-amber)" },
   { key: "waterTankPct", label: "Water Tank", unit: "%", color: "var(--accent-water)" },
+  { key: "soilPh", label: "Soil pH", unit: "pH", color: "var(--accent-leaf)" },
+  { key: "soilEc", label: "Soil EC", unit: "mS/cm", color: "var(--accent-amber)" },
+  { key: "uvIndex", label: "UV Index", unit: "", color: "var(--accent-water)" },
+  { key: "pressureHpa", label: "Pressure", unit: "hPa", color: "var(--accent-leaf)" },
 ];
 
 export default function SensorChart({ history }) {
@@ -110,7 +114,7 @@ export default function SensorChart({ history }) {
               <Line
                 type="monotone"
                 dataKey={primary.key}
-                name={`${primary.label} (${primary.unit})`}
+                name={`${primary.label}${primary.unit ? ` (${primary.unit})` : ""}`}
                 stroke={primary.color}
                 strokeWidth={2}
                 dot={false}
@@ -121,7 +125,7 @@ export default function SensorChart({ history }) {
               <Line
                 type="monotone"
                 dataKey={secondary.key}
-                name={`${secondary.label} (${secondary.unit})`}
+                name={`${secondary.label}${secondary.unit ? ` (${secondary.unit})` : ""}`}
                 stroke={secondary.color}
                 strokeWidth={2}
                 strokeDasharray="4 3"
