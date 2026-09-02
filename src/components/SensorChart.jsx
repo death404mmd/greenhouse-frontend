@@ -31,14 +31,8 @@ const METRICS = [
 ];
 
 export default function SensorChart({ history }) {
-  // Only offer metrics that actually have at least one real reading, so the
-  // selector doesn't fill up with sensors nobody has wired up yet.
-  const availableMetrics = METRICS.filter((m) => history.some((h) => typeof h[m.key] === "number"));
-  const defaultKey = availableMetrics.length > 0 ? availableMetrics[0].key : "temp";
-  const [primaryKey, setPrimaryKey] = useState(defaultKey);
-  const [secondaryKey, setSecondaryKey] = useState(
-    availableMetrics.find((m) => m.key !== defaultKey)?.key || null
-  );
+  const [primaryKey, setPrimaryKey] = useState("temp");
+  const [secondaryKey, setSecondaryKey] = useState("humidity");
 
   const primary = METRICS.find((m) => m.key === primaryKey) || METRICS[0];
   const secondary = METRICS.find((m) => m.key === secondaryKey);
@@ -57,7 +51,7 @@ export default function SensorChart({ history }) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
         <h3 style={{ fontSize: 15, color: "var(--text-primary)" }}>History</h3>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {availableMetrics.map((m) => (
+          {METRICS.map((m) => (
             <button
               key={m.key}
               onClick={() => {
