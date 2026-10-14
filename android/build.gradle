@@ -1,12 +1,9 @@
 buildscript {
     repositories {
-        maven { url 'https://maven.myket.ir' }
-        maven { url 'https://maven.aliyun.com/repository/public' }
-        google()
-        mavenCentral()
+        maven { url 'https://mirror.kargadan.ir/repository/maven-central-group/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.2'
+        classpath 'com.android.tools.build:gradle:8.13.2'
     }
 }
 
@@ -14,6 +11,7 @@ allprojects {
     repositories {
         maven { url 'https://maven.myket.ir' }
         maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://plugins.gradle.org/m2/' }
         google()
         mavenCentral()
     }
